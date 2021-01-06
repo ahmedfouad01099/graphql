@@ -55,13 +55,13 @@ module.exports = {
             password: hashedPW,
           });
           return user.save().then((result) => {
-            console.log(result);
+            // console.log(result);
             return { ...result._doc, _id: result._id.toString() };
           });
         });
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   },
 
@@ -132,31 +132,27 @@ module.exports = {
       updatedAt: createdPost.updatedAt.toISOString(),
     };
   },
-  posts: async function (args, req) {
+  posts: async function ({ page }, req) {
     if (!req.isAuth) {
       const error = new Error("Not authenticated!");
       error.code = 401;
       throw error;
     }
+    if (!page) {
+      page = 1;
+    }
+    const perPage = 2;
     const totalPosts = await Post.find().countDocuments();
-    const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .populate("creator")
-      .exec((err, data) => {
-        if(err){
-          // console.log(err);
-        }
-        console.log(data);
-      });
+    const posts = await Post.find().sort({ createdAt: -1 }).populate("creator");
 
-    // console.log(posts);
+    console.log(posts);
     return {
-      posts: posts.map((el) => {
+      posts: posts.map((p) => {
         return {
-          ...el._doc,
-          _id: el._id.toString(),
-          createdAt: el.createdAt.toISOString(),
-          updatedAt: el.updatedAt.toISOString(),
+          ...p._doc,
+          _id: p._id.toString(),
+          createdAt: p.createdAt.toISOString(),
+          updatedAt: p.updatedAt.toISOString(),
         };
       }),
       totalPosts: totalPosts,
