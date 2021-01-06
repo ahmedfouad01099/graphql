@@ -26,12 +26,6 @@ module.exports = {
   //   return { ...createUser._doc, _id: createUser._id.toString() };
   // },
   createUser({ userInput }, req) {
-    // console.log(req.isAuth);
-    // if (!req.isAuth) {
-    //   const error = new Error("Not authenticated!");
-    //   error.code = 401; // for not authenticated
-    //   throw error;
-    // }
     const errors = [];
     if (!validator.isEmail(userInput.email)) {
       errors.push({ message: "E-Mail is invaild." });
