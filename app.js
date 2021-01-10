@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
+const fileRemove = require("./util/fileRemove");
 const multer = require("multer");
 const graphHttp = require("express-graphql");
 const graphqlSchema = require("./graphql/schema");
@@ -59,6 +60,24 @@ app.use((req, res, next) => {
 });
 
 app.use(auth);
+
+app.put("/post-image", (req, res, next) => {
+  if (!req.isAuth) {
+    throw new Error("Not Authenticated!");
+  }
+  // console.log(req.file);
+  // console.log(req.file.path.replace('\\', '/'));
+  if (!req.file) {
+    return res.status(200).json({ message: "No file Provided!" });
+  }
+  if (req.body.oldPath) {
+    fileRemove.clearImage(req.body.oldPath);
+  }
+  return res.status(201).json({
+    message: "File stored.",
+    filePath: req.file.path, // file path stay as it is in back-end and have to change the path to / not \ in front-end in windows
+  });
+});
 
 app.use(
   "/graphql",
