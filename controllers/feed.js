@@ -22,7 +22,7 @@ exports.getPosts = (req, res, next) => {
         .limit(perPage);
     })
     .then((posts) => {
-      // console.log('populate function', posts);
+      // // console.log('populate function', posts);
       res.status(200).json({
         message: "Fetched posts successfully.",
         posts: posts,
@@ -50,7 +50,7 @@ exports.createPost = (req, res, next) => {
     throw error;
   }
   const imageUrl = req.file.path;
-  // console.log("imageUrl", imageUrl.replace("\\", "/"));
+  // // console.log("imageUrl", imageUrl.replace("\\", "/"));
   const title = req.body.title;
   const content = req.body.content;
   let creator;
@@ -114,7 +114,7 @@ exports.getPost = (req, res, next) => {
 };
 
 exports.updatePost = (req, res, next) => {
-  // console.log("req.userId", req.userId);
+  // // console.log("req.userId", req.userId);
   const postId = req.params.postId;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -136,16 +136,16 @@ exports.updatePost = (req, res, next) => {
   Post.findById(postId)
     .populate("creator")
     .then((post) => {
-      // console.log("creator", post.creator);
+      // // console.log("creator", post.creator);
       if (!post) {
         const error = new Error("Could not find post.");
         error.statusCode = 422;
         throw error;
       }
       // this check for updating to the post owner
-      // console.log("post.creator", post.creator._id);
+      // // console.log("post.creator", post.creator._id);
       // const bool1 = post.creator._id.toString() !== req.userId.toString();
-      // console.log(bool1);
+      // // console.log(bool1);
       if (post.creator._id.toString() !== req.userId.toString()) {
         const error = new Error("Not authorized!");
         error.statusCode = 403;
@@ -178,7 +178,7 @@ exports.deletePost = (req, res, next) => {
         throw error;
       }
       // const bool = post.creator !== req.userId;
-      // console.log(bool);
+      // // console.log(bool);
       if (post.creator !== req.userId) {
         const error = new Error("Not authorized!");
         error.statusCode = 403;
@@ -191,13 +191,13 @@ exports.deletePost = (req, res, next) => {
       return User.findById(req.userId);
     })
     .then((user) => {
-      // console.log(user);
-      // console.log('post id', postId);
+      // // console.log(user);
+      // // console.log('post id', postId);
       user.posts.pull(postId);
       return user.save();
     })
     .then((result) => {
-      // console.log(result);
+      // // console.log(result);
       io.getIO().emit('posts', {action: 'delete', post: postId})
       res.status(200).json({ message: "Deleted post." });
     })
@@ -213,7 +213,7 @@ const clearImage = (filePath) => {
   filePath = path.join(__dirname, "..", filePath);
   fs.unlink(filePath, (err) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   });
 };

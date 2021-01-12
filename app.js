@@ -16,7 +16,7 @@ const fileStorage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     let date = new Date().toDateString();
-    // console.log(date);
+    // // console.log(date);
     cb(
       null,
       new Date().toISOString().replace(/[\/\\:]/g, "_") +
@@ -65,8 +65,8 @@ app.put("/post-image", (req, res, next) => {
   if (!req.isAuth) {
     throw new Error("Not Authenticated!");
   }
-  // console.log(req.file);
-  // console.log(req.file.path.replace('\\', '/'));
+  // // console.log(req.file);
+  // // console.log(req.file.path.replace('\\', '/'));
   if (!req.file) {
     return res.status(200).json({ message: "No file Provided!" });
   }
@@ -98,7 +98,7 @@ app.use(
 );
 
 app.use((error, req, res, next) => {
-  console.log(error);
+  // console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
@@ -111,4 +111,4 @@ mongoose
   .then((result) => {
     app.listen(8080);
   })
-  .catch((err) => console.log(err));
+  .catch((err) =>  console.log(err));
